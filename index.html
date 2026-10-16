@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>إدارة الشرائح — نظيفة ومستعملة</title>
+<title>إدارة وسجل الشرائح المتقدم</title>
 <style>
 :root {
   --bg: #0d1419; --surface: #161f28; --surface-card: #1c2733; --surface-2: #22303d;
@@ -12,7 +12,7 @@
   --accent: #4fb3d1; --accent-fg: #062029; --accent-soft: #14323d;
   --on: #6fd49a; --on-bg: #14341f; --hold: #f0c261; --hold-bg: #3a2c0c; --off: #f08a8a; --off-bg: #3d1a1a;
   --danger: #f2877f; --gold: #e8b64a; --gold-bg: #3a2e0c;
-  --purple: #a892e8; --purple-bg: #2a2340;
+  --purple: #a892e8; --purple-bg: #2a2340; --dup: #f08a4a; --dup-bg: #3d220a;
   --shadow: 0 12px 36px rgba(0,0,0,.55);
   --font: system-ui, "Segoe UI", Roboto, Tahoma, sans-serif;
   --mono: ui-monospace, Consolas, "Roboto Mono", monospace;
@@ -23,14 +23,15 @@
   --accent: #0e7fa8; --accent-fg: #ffffff; --accent-soft: #dff1f8;
   --on: #187a47; --on-bg: #ddf5e6; --hold: #8a6100; --hold-bg: #fdf2d4; --off: #b0332f; --off-bg: #fce4e3;
   --danger: #c0392b; --gold: #a57300; --gold-bg: #fdf3d6;
-  --purple: #6b4fbf; --purple-bg: #ece7fa;
+  --purple: #6b4fbf; --purple-bg: #ece7fa; --dup: #c2650a; --dup-bg: #fceadb;
   --shadow: 0 12px 36px rgba(15,30,50,.14);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5; padding: 14px; padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
-.wrap { max-width: 900px; margin: 0 auto; }
+.wrap { max-width: 920px; margin: 0 auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 header.top { position: sticky; top: 0; z-index: 10; background: var(--bg); padding-block: 8px 12px; display: grid; gap: 10px; }
@@ -43,29 +44,25 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 .icon-btn.accent { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .icon-btn .dot { position: absolute; top: -3px; inset-inline-end: -3px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--danger); color: #fff; font-size: .65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid var(--bg); }
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-weight: 500; font-size: .85rem; white-space: nowrap; transition: all .15s ease; }
+
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-weight: 500; font-size: .85rem; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn:hover { border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
 .btn.danger { color: var(--danger); border-color: var(--danger); }
 .btn.gold { background: var(--gold); color: #2a1f00; border-color: var(--gold); font-weight: 700; }
 .btn.purple { background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 600; }
-.btn.on { background: var(--on); color: #0a2415; border-color: var(--on); font-weight: 700; }
 .btn.sm { padding: 5px 10px; font-size: .78rem; }
 
-/* ===== MAIN TABS ===== */
-.main-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-.main-tabs::-webkit-scrollbar { display: none; }
-.main-tab {
-  flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 12px;
-  padding: 9px 15px; display: inline-flex; gap: 8px; align-items: center;
-  font-size: .88rem; font-weight: 600; color: var(--muted); transition: all .15s ease;
-}
-.main-tab .mt-icon { font-size: 1.05rem; }
-.main-tab b { font-family: var(--mono); font-size: .76rem; background: var(--bg); border: 1px solid var(--line); padding: 1px 8px; border-radius: 999px; color: var(--fg); }
-.main-tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-.main-tab[aria-pressed="true"] b { color: var(--accent-fg); background: rgba(0,0,0,.15); border-color: transparent; }
-.main-tab.clean-tab[aria-pressed="true"] { background: var(--on); color: #08210f; border-color: var(--on); }
-.main-tab.used-tab[aria-pressed="true"] { background: var(--hold); color: #2a1f00; border-color: var(--hold); }
+/* الفلاتر والتبويبات */
+.toolbar { display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; flex: 1; min-width: 0; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; display: inline-flex; gap: 6px; align-items: center; font-size: .84rem; color: var(--muted); }
+.tab b { font-family: var(--mono); font-weight: 600; font-size: .76rem; background: var(--bg); border: 1px solid var(--line); padding: 1px 7px; border-radius: 999px; }
+.tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.tab[aria-pressed="true"] b { color: inherit; background: rgba(0,0,0,.15); }
+.tab.dup-tab { border-color: var(--dup); color: var(--dup); }
+.tab.dup-tab[aria-pressed="true"] { background: var(--dup); color: #fff; }
 
 .search { position: relative; }
 .search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 42px 11px 16px; font-size: .95rem; color: var(--fg); }
@@ -73,83 +70,51 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 .search .clear-btn { position: absolute; inset-inline-start: 10px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; color: var(--muted); display: none; align-items: center; justify-content: center; font-size: .9rem; }
 .search .clear-btn.show { display: flex; }
 
-/* ===== STATS ===== */
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
-.stat-card {
-  background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px;
-  padding: 11px 13px; display: grid; gap: 3px; position: relative; overflow: hidden;
-}
-.stat-card::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
-.stat-card.clean::before { background: var(--on); }
-.stat-card.used::before { background: var(--hold); }
-.stat-card .sc-num { font-family: var(--mono); font-size: 1.45rem; font-weight: 800; line-height: 1.1; }
-.stat-card.clean .sc-num { color: var(--on); }
-.stat-card.used .sc-num { color: var(--hold); }
-.stat-card .sc-lbl { font-size: .72rem; color: var(--muted); font-weight: 600; }
+.sort-select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: .82rem; color: var(--fg); cursor: pointer; }
 
-/* ===== GRID ===== */
-.grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 10px; margin-top: 12px;
-}
-.tile {
-  background: var(--surface-card); border: 1px solid var(--line); border-radius: 13px;
-  padding: 12px 13px; display: grid; gap: 8px; position: relative;
-  animation: cardIn .22s ease both;
-}
+/* شبكة البطاقات */
+.grid { display: grid; gap: 12px; margin-top: 12px; }
+@media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card { background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; position: relative; animation: cardIn .25s ease both; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.tile.clean { border-inline-start: 4px solid var(--on); }
-.tile.used  { border-inline-start: 4px solid var(--hold); }
-.tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.22); transition: all .15s ease; }
+.card.duplicate { border-color: var(--dup); }
+.card.clean { border-inline-start: 4px solid var(--on); }
+.card.used { border-inline-start: 4px solid var(--hold); }
 
-.tile-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.tile-sim {
-  font-family: var(--mono); font-size: .88rem; font-weight: 700; direction: ltr;
-  word-break: break-all; text-align: start; line-height: 1.35; flex: 1; min-width: 0;
-}
-.tile-badge {
-  font-size: .66rem; padding: 2px 8px; border-radius: 999px; font-weight: 700;
-  flex-shrink: 0; letter-spacing: .2px;
-}
-.tile-badge.clean { background: var(--on-bg); color: var(--on); }
-.tile-badge.used  { background: var(--hold-bg); color: var(--hold); }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.phone-wrap { display: flex; align-items: center; gap: 8px; }
+.phone-lg { font-family: var(--mono); font-size: 1.15rem; font-weight: 700; direction: ltr; letter-spacing: .4px; }
+.copy-btn { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .78rem; flex-shrink: 0; }
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 
-.tile-company {
-  display: flex; align-items: center; gap: 7px;
-  font-size: .84rem; color: var(--fg);
-}
-.tile-company .tc-icon { font-size: 1rem; opacity: .8; }
-.tile-company .tc-name { font-weight: 600; }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+.badge.active { background: var(--on-bg); color: var(--on); }
+.badge.suspended { background: var(--hold-bg); color: var(--hold); }
+.badge.disconnected { background: var(--off-bg); color: var(--off); }
+.badge.clean-type { background: var(--on-bg); color: var(--on); }
+.badge.used-type { background: var(--hold-bg); color: var(--hold); }
+.badge.days { background: var(--accent-soft); color: var(--accent); }
+.badge.debt { background: var(--gold-bg); color: var(--gold); font-family: var(--mono); }
+.badge.dup { background: var(--dup-bg); color: var(--dup); font-weight: 700; }
+.badge-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-inline-start: auto; }
 
-.tile-notes {
-  font-size: .76rem; color: var(--muted);
-  background: color-mix(in srgb, var(--line) 25%, transparent);
-  border-radius: 8px; padding: 5px 9px; line-height: 1.4;
-}
+.card-body { display: grid; gap: 4px; font-size: .9rem; }
+.name-row { font-weight: 600; font-size: 1.02rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sim-row { font-family: var(--mono); font-size: .8rem; color: var(--muted); direction: ltr; }
+.notes-box { font-size: .8rem; color: var(--muted); margin-top: 3px; padding: 6px 9px; background: color-mix(in srgb, var(--line) 30%, transparent); border-radius: 8px; line-height: 1.45; }
 
-.tile-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 2px; }
-.tile-btn {
-  border: 1px solid var(--line); background: var(--surface);
-  border-radius: 8px; padding: 7px 5px; font-size: .74rem; font-weight: 600;
-  display: flex; align-items: center; justify-content: center; gap: 3px;
-  color: var(--fg); transition: all .15s ease;
-}
-.tile-btn:hover { border-color: var(--accent); }
-.tile-btn.use { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 30%, transparent); }
-.tile-btn.use:hover { background: var(--on); color: #08210f; }
-.tile-btn.restore { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
-.tile-btn.restore:hover { background: var(--accent); color: var(--accent-fg); }
-.tile-btn.del { border-color: var(--danger); color: var(--danger); }
-.tile-btn.del:hover { background: var(--danger); color: #fff; }
-.tile-btn.copy { border-color: var(--line); color: var(--muted); }
-.tile-btn.copy:hover { color: var(--accent); border-color: var(--accent); }
+.date-row { font-size: .84rem; color: var(--fg); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.date-val { font-family: var(--mono); direction: ltr; color: var(--muted); }
+.card-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
-.empty { padding: 60px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px dashed var(--line); grid-column: 1 / -1; }
-.empty .big { font-size: 2.4rem; display: block; margin-bottom: 10px; }
-.empty .empty-title { font-weight: 700; color: var(--fg); font-size: 1rem; margin-bottom: 4px; }
-.empty .empty-sub { font-size: .82rem; }
+.action-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; font-size: .78rem; font-weight: 500; color: var(--fg); display: inline-flex; align-items: center; gap: 4px; }
+.action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 35%, transparent); }
+.action-btn.edit { border-color: var(--accent); color: var(--accent); }
 
-/* ===== DRAWER ===== */
+.empty { padding: 46px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px dashed var(--line); grid-column: 1 / -1; }
+.empty .big { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+/* لوحة التحكم الجانبية */
 .drawer-scrim { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 60; opacity: 0; pointer-events: none; transition: opacity .25s ease; backdrop-filter: blur(3px); }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 .drawer { position: fixed; top: 0; bottom: 0; right: 0; width: min(400px, 94vw); background: var(--surface); border-left: 1px solid var(--line); z-index: 61; transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; box-shadow: var(--shadow); }
@@ -158,80 +123,44 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 .drawer-title { font-size: 1.05rem; font-weight: 700; }
 .drawer-sub { font-size: .74rem; color: var(--muted); margin-top: 1px; }
 .drawer-body { flex: 1; overflow-y: auto; padding: 14px; display: grid; gap: 16px; align-content: start; }
-.drawer-body::-webkit-scrollbar { width: 6px; }
-.drawer-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
 
-.side-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.side-nav-btn {
-  border: 1px solid var(--line); background: var(--surface-card); color: var(--muted);
-  font-size: .88rem; font-weight: 700; padding: 14px 10px; border-radius: 14px;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  transition: all .15s ease;
-}
-.side-nav-btn:hover { transform: translateY(-2px); }
-.side-nav-btn .sn-icon { font-size: 1.6rem; }
-.side-nav-btn .sn-num { font-family: var(--mono); font-size: 1.15rem; font-weight: 800; line-height: 1; }
-.side-nav-btn .sn-label { font-size: .74rem; }
-.side-nav-btn.clean.active { background: var(--on); color: #08210f; border-color: var(--on); }
-.side-nav-btn.clean { border-color: color-mix(in srgb, var(--on) 40%, var(--line)); }
-.side-nav-btn.clean .sn-num { color: var(--on); }
-.side-nav-btn.clean.active .sn-num { color: #08210f; }
-.side-nav-btn.used.active { background: var(--hold); color: #2a1f00; border-color: var(--hold); }
-.side-nav-btn.used { border-color: color-mix(in srgb, var(--hold) 40%, var(--line)); }
-.side-nav-btn.used .sn-num { color: var(--hold); }
-.side-nav-btn.used.active .sn-num { color: #2a1f00; }
-
-.side-panel { display: none; gap: 14px; align-content: start; }
-.side-panel.active { display: grid; }
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.stat { background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat .num { font-family: var(--mono); font-size: 1.32rem; font-weight: 700; }
+.stat .lbl { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.stat.on .num { color: var(--on); }
+.stat.hold .num { color: var(--hold); }
+.stat.acc .num { color: var(--accent); }
+.stat.dup .num { color: var(--dup); }
 
 .drawer-section { display: grid; gap: 8px; }
 .drawer-section-head { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; font-weight: 700; color: var(--fg); }
-.drawer-section-head b { font-family: var(--mono); font-size: .74rem; color: var(--muted); background: var(--bg); border: 1px solid var(--line); padding: 2px 10px; border-radius: 999px; }
-.mini-list { display: grid; gap: 6px; max-height: 340px; overflow-y: auto; padding-inline-end: 2px; }
-.mini-list::-webkit-scrollbar { width: 4px; }
-.mini-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
-.mini-item {
-  width: 100%; text-align: start; background: var(--surface-card); border: 1px solid var(--line);
-  border-radius: 10px; padding: 9px 11px; display: grid; gap: 2px; transition: all .15s ease;
-}
-.mini-item:hover { border-color: var(--accent); transform: translateX(-2px); }
-.mini-item.clean { border-inline-start: 3px solid var(--on); }
-.mini-item.used  { border-inline-start: 3px solid var(--hold); }
-.mini-item .mi-sim { font-family: var(--mono); font-size: .82rem; font-weight: 700; direction: ltr; }
-.mini-item .mi-meta { font-size: .72rem; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
-.mini-empty { font-size: .82rem; color: var(--muted); text-align: center; padding: 22px 14px; border: 1px dashed var(--line); border-radius: 10px; }
+.drawer-section-head b { font-family: var(--mono); font-size: .74rem; color: var(--muted); background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; }
+.mini-list { display: grid; gap: 6px; max-height: 250px; overflow-y: auto; }
+.mini-item { background: var(--surface-card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; display: grid; gap: 1px; }
+.mini-item .mi-phone { font-family: var(--mono); font-size: .9rem; font-weight: 700; direction: ltr; }
+.mini-item .mi-meta { font-size: .72rem; color: var(--muted); display: flex; justify-content: space-between; }
+.mini-empty { font-size: .8rem; color: var(--muted); text-align: center; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; }
 
-.drawer-actions { display: grid; gap: 8px; }
-.drawer-actions .btn { text-align: center; }
+.drawer-actions { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
 
-/* ===== MODAL ===== */
+/* النوافذ المنبثقة (Modals) */
 .overlay { position: fixed; inset: 0; z-index: 70; background: rgba(8,18,26,.75); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 14px; }
 .overlay[hidden] { display: none; }
-.dlg { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 500px; max-height: 92vh; overflow-y: auto; padding: 18px; display: grid; gap: 13px; border: 1px solid var(--line); animation: dlgIn .22s ease both; }
-@keyframes dlgIn { from { opacity: 0; transform: scale(.97) translateY(6px); } to { opacity: 1; transform: none; } }
+.dlg { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; padding: 18px; display: grid; gap: 13px; border: 1px solid var(--line); }
 .dlg h2 { margin: 0; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .field { display: grid; gap: 5px; }
 .field label { font-size: .8rem; color: var(--muted); font-weight: 500; }
 .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 13px; color: var(--fg); font-size: .93rem; }
-.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+.field textarea { min-height: 75px; resize: vertical; }
 .field input.ltr { direction: ltr; text-align: right; font-family: var(--mono); }
-.field textarea { min-height: 70px; resize: vertical; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 480px) { .two { grid-template-columns: 1fr; } }
 .actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
-.actions .spacer { flex: 1; }
-.hint { color: var(--muted); font-size: .78rem; margin: 0; line-height: 1.5; }
+.hint { color: var(--muted); font-size: .78rem; line-height: 1.5; margin: 0; }
 
-.range-box { display: grid; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; }
-.range-box label { font-size: .8rem; font-weight: 600; color: var(--fg); }
-.range-box textarea { min-height: 130px; font-family: var(--mono); font-size: .82rem; direction: ltr; text-align: left; }
-
-/* Toast */
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 11px 16px; border-radius: 11px; z-index: 90; font-size: .88rem; box-shadow: 0 6px 20px rgba(0,0,0,.35); display: flex; align-items: center; gap: 12px; max-width: min(92vw, 480px); animation: toastIn .25s ease both; }
-.toast.out { animation: toastOut .3s ease both; }
-.toast .toast-action { background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 8px; padding: 3px 10px; font-size: .8rem; font-weight: 700; }
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
-@keyframes toastOut { to { opacity: 0; transform: translate(-50%, 18px); } }
 </style>
 </head>
 <body>
@@ -240,51 +169,33 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   <header class="top">
     <div class="titlebar">
       <div class="title-left">
-        <button class="icon-btn" id="menuBtn" type="button" aria-label="القائمة الجانبية">☰</button>
+        <button class="icon-btn" id="menuBtn" type="button">☰<span class="dot" id="menuDot" style="display:none;">0</span></button>
         <div>
-          <h1>إدارة الشرائح</h1>
+          <h1>إدارة وسجل الشرائح</h1>
           <div class="sub" id="summary">جاري التحميل…</div>
         </div>
       </div>
       <div class="btns">
-        <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر">🌙</button>
-        <button class="btn purple" id="addManyBtn" type="button">إضافة مجموعة</button>
-        <button class="icon-btn accent" id="addBtn" type="button" aria-label="إضافة">＋</button>
+        <button class="icon-btn" id="themeBtn" type="button">🌙</button>
+        <button class="btn purple" id="bulkBtn" type="button">📋 إضافة مجموعة</button>
+        <button class="icon-btn accent" id="addBtn" type="button">＋</button>
       </div>
     </div>
 
-    <div class="main-tabs" id="mainTabs">
-      <button type="button" class="main-tab clean-tab" data-tab="clean">
-        <span class="mt-icon">🟢</span>
-        <span>شرائح نظيفة</span>
-        <b id="tabCleanCount">0</b>
-      </button>
-      <button type="button" class="main-tab used-tab" data-tab="used">
-        <span class="mt-icon">🟡</span>
-        <span>شرائح مستعملة</span>
-        <b id="tabUsedCount">0</b>
-      </button>
+    <div class="toolbar">
+      <div class="tabs" id="tabs"></div>
+      <select class="sort-select" id="sortSel">
+        <option value="smart">الأقرب موعداً</option>
+        <option value="recent">الأحدث إضافتاً</option>
+        <option value="dups">🔁 الأرقام المكررة</option>
+        <option value="name">الاسم (أ-ي)</option>
+      </select>
     </div>
 
     <div class="search">
-      <input id="q" type="search" placeholder="ابحث برقم الشريحة أو اسم الشركة…" autocomplete="off">
+      <input id="q" type="search" placeholder="ابحث برقم الهاتف، رقم الشريحة، أو الاسم…" autocomplete="off">
       <span class="search-icon">🔍</span>
-      <button class="clear-btn" id="clearQ" type="button" aria-label="مسح">✕</button>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-card clean">
-        <div class="sc-num" id="statClean">0</div>
-        <div class="sc-lbl">🟢 نظيفة متاحة</div>
-      </div>
-      <div class="stat-card used">
-        <div class="sc-num" id="statUsed">0</div>
-        <div class="sc-lbl">🟡 مستعملة</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-num" id="statTotal">0</div>
-        <div class="sc-lbl">📦 الإجمالي</div>
-      </div>
+      <button class="clear-btn" id="clearQ" type="button">✕</button>
     </div>
   </header>
 
@@ -293,105 +204,62 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   </main>
 </div>
 
-<!-- ============ DRAWER ============ -->
+<!-- القائمة الجانبية -->
 <div class="drawer-scrim" id="drawerScrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
     <div>
-      <div class="drawer-title">لوحة التحكم</div>
-      <div class="drawer-sub">إدارة الشرائح النظيفة والمستعملة</div>
+      <div class="drawer-title">لوحة التحكم والإدارة</div>
+      <div class="drawer-sub">إحصائيات سريعة والنسخ الاحتياطي</div>
     </div>
-    <button class="icon-btn" id="drawerClose" type="button" aria-label="إغلاق">✕</button>
+    <button class="icon-btn" id="drawerClose" type="button">✕</button>
   </div>
 
   <div class="drawer-body">
-    <div class="side-nav">
-      <button type="button" class="side-nav-btn clean active" data-panel="clean">
-        <span class="sn-icon">🟢</span>
-        <span class="sn-num" id="snCleanNum">0</span>
-        <span class="sn-label">شرائح نظيفة</span>
-      </button>
-      <button type="button" class="side-nav-btn used" data-panel="used">
-        <span class="sn-icon">🟡</span>
-        <span class="sn-num" id="snUsedNum">0</span>
-        <span class="sn-label">شرائح مستعملة</span>
-      </button>
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-head"><span>🔁 الأرقام المكررة</span><b id="dupsMiniCount">0</b></div>
+      <div class="mini-list" id="dupsMiniList"></div>
     </div>
 
-    <div class="side-panel active" id="panel-clean">
-      <div class="drawer-section">
-        <div class="drawer-section-head">
-          <span>🟢 قائمة الشرائح النظيفة</span>
-          <b id="snCleanListCount">0</b>
-        </div>
-        <div class="mini-list" id="snCleanList"></div>
-      </div>
-    </div>
-
-    <div class="side-panel" id="panel-used">
-      <div class="drawer-section">
-        <div class="drawer-section-head">
-          <span>🟡 قائمة الشرائح المستعملة</span>
-          <b id="snUsedListCount">0</b>
-        </div>
-        <div class="mini-list" id="snUsedList"></div>
-      </div>
-    </div>
-
-    <div class="drawer-actions" style="margin-top:4px; padding-top:12px; border-top:1px solid var(--line);">
-      <button class="btn purple" id="dAddClean" type="button">＋ إضافة شريحة نظيفة</button>
-      <button class="btn" id="dAddMany" type="button">📋 استيراد مجموعة شرائح</button>
-      <button class="btn" id="dExpCSV" type="button">⬇️ تصدير Excel / CSV</button>
-      <button class="btn danger" id="dWipe" type="button">🗑️ حذف جميع الشرائح</button>
+    <div class="drawer-actions">
+      <button class="btn primary" id="exportJsonBtn" type="button">💾 تصدير النسخة الاحتياطية (JSON)</button>
+      <button class="btn" id="importJsonBtn" type="button">📂 استيراد نسخة احتياطية</button>
+      <input type="file" id="importJsonFile" accept=".json" style="display:none;">
+      <button class="btn danger" id="wipeBtn" type="button">🗑️ حذف جميع البيانات</button>
     </div>
   </div>
 </aside>
 
-<!-- ============ ADD/EDIT SINGLE MODAL ============ -->
+<!-- نافذة إضافة/تعديل شريحة -->
 <div class="overlay" id="overlay" hidden>
   <form class="dlg" id="form" novalidate>
-    <h2>
-      <span id="dlgTitle">إضافة شريحة</span>
-      <button class="btn sm" type="button" id="closeDlg">إغلاق</button>
-    </h2>
+    <h2><span id="dlgTitle">إضافة شريحة</span><button class="btn sm" type="button" id="closeDlg">إغلاق</button></h2>
 
-    <div class="field">
-      <label for="f-sim">رقم الشريحة (SIM) *</label>
-      <input id="f-sim" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="8997…">
-    </div>
-
+    <div class="field"><label for="f-name">اسم الزبون (اختياري)</label><input id="f-name" type="text"></div>
     <div class="two">
-      <div class="field">
-        <label for="f-company">شركة الاتصالات</label>
-        <select id="f-company">
-          <option value="">اختر الشركة</option>
-          <option>سلكوم</option>
-          <option>هوت موبايل</option>
-          <option>بلفون</option>
-          <option>بارتنر</option>
-          <option>رامي ليفي</option>
-          <option>019</option>
-          <option>ألوها</option>
-          <option>وي</option>
-          <option>أخرى</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="f-type">نوع الشريحة</label>
-        <select id="f-type">
-          <option value="clean">🟢 نظيفة</option>
-          <option value="used">🟡 مستعملة</option>
-        </select>
+      <div class="field"><label for="f-phone">رقم الهاتف</label><input id="f-phone" class="ltr" type="text" placeholder="05XXXXXXXX"></div>
+      <div class="field"><label for="f-company">الشركة</label>
+        <select id="f-company"><option value="">اختر</option><option>سلكوم</option><option>هوت</option><option>بلفون</option><option>بارتنر</option><option>رامي ليفي</option><option>019</option><option>وي</option><option>أخرى</option></select>
       </div>
     </div>
-
-    <div class="field">
-      <label for="f-notes">ملاحظات</label>
-      <textarea id="f-notes" placeholder="ملاحظات إضافية…"></textarea>
+    <div class="two">
+      <div class="field"><label for="f-sim">رقم الشريحة (SIM)</label><input id="f-sim" class="ltr" type="text" placeholder="8997…"></div>
+      <div class="field"><label for="f-type">نوع المخزون</label>
+        <select id="f-type"><option value="clean">🟢 نظيفة</option><option value="used">🟡 مستعملة</option></select>
+      </div>
     </div>
+    <div class="two">
+      <div class="field"><label for="f-status">حالة الشريحة</label>
+        <select id="f-status"><option value="active">مفعل</option><option value="suspended">معلق</option><option value="disconnected">مفصول</option></select>
+      </div>
+      <div class="field"><label for="f-date">موعد الفصل</label><input id="f-date" type="date"></div>
+    </div>
+    <div class="field"><label for="f-debt">مبلغ الدين (₪)</label><input id="f-debt" class="ltr" type="number" min="0" value="0"></div>
+    <div class="field"><label for="f-notes">ملاحظات</label><textarea id="f-notes"></textarea></div>
 
     <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="err"></div>
-
     <div class="actions">
       <button class="btn primary" type="submit" style="flex:2;">حفظ</button>
       <button class="btn danger" type="button" id="delBtn" hidden>حذف</button>
@@ -399,52 +267,25 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   </form>
 </div>
 
-<!-- ============ BULK ADD MODAL ============ -->
+<!-- نافذة الاستيراد الجماعي -->
 <div class="overlay" id="bulkOverlay" hidden>
   <form class="dlg" id="bulkForm" novalidate>
-    <h2>
-      <span>📋 استيراد مجموعة شرائح</span>
-      <button class="btn sm" type="button" id="bulkClose">إغلاق</button>
-    </h2>
-
-    <p class="hint">الصق أرقام الشرائح (كل رقم في سطر)، واختر الشركة والنوع ليتم تطبيقها على الكل.</p>
-
+    <h2><span>📋 استيراد مجموعة شرائح</span><button class="btn sm" type="button" id="bulkClose">إغلاق</button></h2>
+    <p class="hint">الصق أرقام الشرائح أو الهواتف (كل رقم في سطر)، وسيتم إضافتها دفعة واحدة.</p>
     <div class="two">
-      <div class="field">
-        <label for="b-company">شركة الاتصالات</label>
-        <select id="b-company">
-          <option value="">بدون شركة</option>
-          <option>سلكوم</option>
-          <option>هوت موبايل</option>
-          <option>بلفون</option>
-          <option>بارتنر</option>
-          <option>رامي ليفي</option>
-          <option>019</option>
-          <option>ألوها</option>
-          <option>وي</option>
-          <option>أخرى</option>
-        </select>
+      <div class="field"><label for="b-company">الشركة العامة</label>
+        <select id="b-company"><option value="">اختر</option><option>سلكوم</option><option>هوت</option><option>بلفون</option><option>بارتنر</option><option>رامي ليفي</option><option>019</option><option>وي</option><option>أخرى</option></select>
       </div>
-      <div class="field">
-        <label for="b-type">نوع الشريحة</label>
-        <select id="b-type">
-          <option value="clean">🟢 نظيفة</option>
-          <option value="used">🟡 مستعملة</option>
-        </select>
+      <div class="field"><label for="b-type">النوع العام</label>
+        <select id="b-type"><option value="clean">🟢 نظيفة</option><option value="used">🟡 مستعملة</option></select>
       </div>
     </div>
-
-    <div class="range-box">
-      <label for="b-list">قائمة أرقام الشرائح</label>
-      <textarea id="b-list" placeholder="899720204998524385&#10;899720204993710443&#10;899720206476741266…"></textarea>
+    <div class="field">
+      <label for="b-list">قائمة الأرقام</label>
+      <textarea id="b-list" class="ltr" style="min-height:120px;" placeholder="89972020...\n89972020..."></textarea>
     </div>
-
-    <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="bulkErr"></div>
-
     <div class="actions">
-      <span class="hint" id="bulkCount" style="margin:0;">0 رقم</span>
-      <span class="spacer"></span>
-      <button class="btn primary" type="submit">حفظ الكل</button>
+      <button class="btn primary" type="submit" style="width:100%;">استيراد الكل</button>
     </div>
   </form>
 </div>
@@ -453,602 +294,458 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 (function () {
   "use strict";
 
-  var STORAGE_KEY = "sim_inventory_v2";
-  var THEME_KEY = "sim_theme_v2";
-  var SEED_FLAG = "sim_inv_seeded_v2";
+  var STORAGE_KEY = "sim_unified_v1";
+  var THEME_KEY = "sim_theme_v1";
 
-  /* ============================================================
-     SEED DATA — الشرائح النظيفة المطلوبة
-     ============================================================ */
-  var SEED_CLEAN_SIMS = [
-    "899720204998524385","899720204993710443","899720206476741266","899720204753147869",
-    "899720206477046764","899720201492746456","899720206995302798","899720204998524138",
-    "899720201509002992","899720201509281067","899720206479187087","899720208496505648",
-    "899720208496505952","899720208475003680","899720201997074487","899720204994443069",
-    "899720201530003175","899720201508033923","899720201508043393","899720201508043096",
-    "899720201507798070","899720201507798120","899720201507798138","899720208497370810",
-    "899720203500827336","899720201602269761","899720201530004967","899720203507516874",
-    "899720203507503807","899720203507509085","899720204496546567","899720204496573264",
-    "899720204495307268","899720204500814555","899720204496539612","899720204496573298",
-    "899720204496538952","899720203507497984","899720203500826551","899720204496798366",
-    "899720203507510794","899720204500814282","899720204496546385","899720203507509010",
-    "899720204496548548","899720204496527195","899720203500827021","899720203507515470",
-    "899720204500814050","899720204496574304","899720203507515371","899720203507496986",
-    "899720203507496556","899720204496545700","899720204496814254","899720203507515926",
-    "899720204496546203","899720204496810930","899720203507514937","899720204496799273",
-    "899720203507513384","899720203507497414","899720204496782634","899720204500814647",
-    "899720203500827617","899720203507497117","899720204496814106","899720204496808371",
-    "899720204496805492","899720204496546252","899720204496548555","899720204496573884",
-    "899720203507497562","899720204496814528","899720204496574817","899720203507509119",
-    "899720204496538366","899720203507508178","899720204496527344","899720204496799943",
-    "899720203507508608","899720204496821457","899720204496782097","899720204496780703",
-    "899720203507509192","899720204998511358","899720201505741999","899720201505742005",
-    "899720201505742013","899720208492673978","899720201505742047","899720201508043377",
-    "899720201501441784","899720201502049339","899720204994448514","899720201491832034",
-    "899720204993578550","899720208476793990"
+  var sims = [];
+  var currentFilter = "all";
+  var currentSearch = "";
+  var currentSort = "smart";
+  var editingId = null;
+
+  // عناصر الواجهة
+  var gridEl = document.getElementById("grid");
+  var summaryEl = document.getElementById("summary");
+  var searchInput = document.getElementById("q");
+  var clearQBtn = document.getElementById("clearQ");
+  var sortSel = document.getElementById("sortSel");
+  var tabsEl = document.getElementById("tabs");
+  var themeBtn = document.getElementById("themeBtn");
+  var addBtn = document.getElementById("addBtn");
+  var bulkBtn = document.getElementById("bulkBtn");
+  var menuBtn = document.getElementById("menuBtn");
+  var menuDot = document.getElementById("menuDot");
+  var drawer = document.getElementById("drawer");
+  var drawerScrim = document.getElementById("drawerScrim");
+  var drawerClose = document.getElementById("drawerClose");
+  
+  // المودال
+  var overlay = document.getElementById("overlay");
+  var form = document.getElementById("form");
+  var closeDlg = document.getElementById("closeDlg");
+  var delBtn = document.getElementById("delBtn");
+  var dlgTitle = document.getElementById("dlgTitle");
+  var errEl = document.getElementById("err");
+
+  // المودال الجماعي
+  var bulkOverlay = document.getElementById("bulkOverlay");
+  var bulkForm = document.getElementById("bulkForm");
+  var bulkClose = document.getElementById("bulkClose");
+
+  // التخزين الاحتياطي
+  var exportJsonBtn = document.getElementById("exportJsonBtn");
+  var importJsonBtn = document.getElementById("importJsonBtn");
+  var importJsonFile = document.getElementById("importJsonFile");
+  var wipeBtn = document.getElementById("wipeBtn");
+
+  var SEED_DATA = [
+    { name: "رامي", phone: "0555608325", sim: "8997250003016774291", company: "رامي ليفي", type: "used", status: "active", cutDate: "2026-10-12", notes: "", debt: 0, createdAt: Date.now() },
+    { name: "رقمي العزازي", phone: "0507194570", sim: "8997250200087215259", company: "بلفون", type: "used", status: "active", cutDate: "2026-10-12", notes: "", debt: 0, createdAt: Date.now() },
+    { name: "شمالي جهاد", phone: "0524386903", sim: "899720203501190502", company: "سلكوم", type: "used", status: "active", cutDate: "2026-10-14", notes: "", debt: 0, createdAt: Date.now() },
+    { name: "تدريس", phone: "0542113928", sim: "89972010915031422471", company: "بارتنر", type: "used", status: "active", cutDate: "2026-10-18", notes: "عليه فلوس دين", debt: 200, createdAt: Date.now() },
+    { name: "", phone: "", sim: "899720204998524385", company: "سلكوم", type: "clean", status: "active", cutDate: "", notes: "شريحة نظيفة مخزون", debt: 0, createdAt: Date.now() },
+    { name: "", phone: "", sim: "899720204993710443", company: "سلكوم", type: "clean", status: "active", cutDate: "", notes: "شريحة نظيفة مخزون", debt: 0, createdAt: Date.now() }
   ];
 
-  /* ============================================================
-     STATE
-     ============================================================ */
-  var sims = new Map();          // _id -> { _id, sim, company, type, notes, createdAt, updatedAt }
-  var activeTab = "clean";       // "clean" | "used"
-  var query = "";
-  var editingId = null;
-  var delArmed = false;
-  var lastDeleted = null;
+  function init() {
+    var savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    themeBtn.textContent = savedTheme === "dark" ? "🌙" : "☀️";
 
-  function $(id) { return document.getElementById(id); }
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-  }); }
-  function uid() { return "sim_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7); }
-  function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
-
-  function toast(msg, actionLabel, actionFn) {
-    var t = document.createElement("div");
-    t.className = "toast";
-    var span = document.createElement("span"); span.textContent = msg;
-    t.appendChild(span);
-    if (actionLabel && actionFn) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "toast-action"; b.textContent = actionLabel;
-      b.addEventListener("click", function () { actionFn(); dismiss(); });
-      t.appendChild(b);
+    var stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try { sims = JSON.parse(stored); } catch(e) { sims = SEED_DATA; }
+    } else {
+      sims = SEED_DATA;
+      saveData();
     }
-    document.body.appendChild(t);
-    var timer = setTimeout(dismiss, actionLabel ? 5000 : 2500);
-    function dismiss() { clearTimeout(timer); if (!t.parentNode) return; t.classList.add("out"); setTimeout(function () { t.remove(); }, 300); }
-  }
 
-  function copyText(text) {
-    text = String(text || "");
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { toast("تم النسخ ✓"); })
-        .catch(function () { fallbackCopy(text); });
-    } else fallbackCopy(text);
-  }
-  function fallbackCopy(text) {
-    try {
-      var ta = document.createElement("textarea"); ta.value = text;
-      ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      document.execCommand("copy"); ta.remove();
-      toast("تم النسخ ✓");
-    } catch (e) { toast("تعذر النسخ"); }
-  }
-
-  /* ============================================================
-     STORAGE
-     ============================================================ */
-  function loadData() {
-    var raw = null;
-    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    if (raw) {
-      try {
-        var arr = JSON.parse(raw);
-        if (Array.isArray(arr)) {
-          arr.forEach(function (r) {
-            if (r && r._id && r.sim) {
-              if (!r.createdAt) r.createdAt = Date.now();
-              if (!r.updatedAt) r.updatedAt = r.createdAt;
-              if (r.type !== "used") r.type = "clean";
-              if (!r.company) r.company = "";
-              if (!r.notes) r.notes = "";
-              sims.set(r._id, r);
-            }
-          });
-        }
-      } catch (e) { sims = new Map(); }
-    }
-    /* Auto-seed on first run */
-    if (sims.size === 0 && localStorage.getItem(SEED_FLAG) !== "done") {
-      seedClean();
-      try { localStorage.setItem(SEED_FLAG, "done"); } catch (e) {}
-    }
-  }
-
-  function seedClean() {
-    var now = Date.now();
-    var added = 0;
-    SEED_CLEAN_SIMS.forEach(function (sim) {
-      sim = String(sim).trim();
-      if (!sim) return;
-      var exists = false;
-      sims.forEach(function (r) { if (r.sim === sim) exists = true; });
-      if (exists) return;
-      sims.set(uid(), {
-        _id: uid(),
-        sim: sim,
-        company: "",
-        type: "clean",
-        notes: "مخزون أولي",
-        createdAt: now + (added++),
-        updatedAt: now + added
-      });
-    });
-    if (added > 0) saveData();
-    return added;
+    bindEvents();
+    render();
   }
 
   function saveData() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(sims.values()))); }
-    catch (e) { toast("تعذر الحفظ!"); }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sims));
   }
 
-  /* ============================================================
-     COUNTS + STATS
-     ============================================================ */
-  function getClean() { var a = []; sims.forEach(function (r) { if (r.type === "clean") a.push(r); }); return a; }
-  function getUsed()  { var a = []; sims.forEach(function (r) { if (r.type === "used") a.push(r); }); return a; }
-
-  function updateCounts() {
-    var c = getClean().length, u = getUsed().length, t = c + u;
-    $("tabCleanCount").textContent = c;
-    $("tabUsedCount").textContent = u;
-    $("snCleanNum").textContent = c;
-    $("snUsedNum").textContent = u;
-    $("statClean").textContent = c;
-    $("statUsed").textContent = u;
-    $("statTotal").textContent = t;
-    $("summary").textContent = "🟢 نظيفة: " + c + " · 🟡 مستعملة: " + u + " · الإجمالي: " + t;
+  function showToast(msg) {
+    var existing = document.querySelector(".toast");
+    if (existing) existing.remove();
+    var t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 3000);
   }
 
-  /* ============================================================
-     FILTER + RENDER
-     ============================================================ */
-  function matches(r) {
-    if (r.type !== activeTab) return false;
-    if (!query.trim()) return true;
-    var q = query.trim().toLowerCase();
-    return [r.sim, r.company, r.notes].join(" ").toLowerCase().indexOf(q) !== -1;
-  }
+  // أحداث التنقل والمظهر
+  themeBtn.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    var next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem(THEME_KEY, next);
+    themeBtn.textContent = next === "dark" ? "🌙" : "☀️";
+  });
 
-  function sortSims(arr) {
-    return arr.slice().sort(function (a, b) {
-      return (b.updatedAt || 0) - (a.updatedAt || 0);
+  menuBtn.addEventListener("click", function() {
+    drawer.classList.add("open");
+    drawerScrim.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+  });
+  function closeDrawer() {
+    drawer.classList.remove("open");
+    drawerScrim.classList.remove("open");
+    drawer.setAttribute("aria-hidden", "true");
+  }
+  drawerClose.addEventListener("click", closeDrawer);
+  drawerScrim.addEventListener("click", closeDrawer);
+
+  addBtn.addEventListener("click", function() { openEditor(null); });
+  bulkBtn.addEventListener("click", function() { bulkOverlay.hidden = false; });
+  closeDlg.addEventListener("click", function() { overlay.hidden = true; });
+  bulkClose.addEventListener("click", function() { bulkOverlay.hidden = true; });
+  overlay.addEventListener("click", function(e) { if(e.target === overlay) overlay.hidden = true; });
+  bulkOverlay.addEventListener("click", function(e) { if(e.target === bulkOverlay) bulkOverlay.hidden = true; });
+
+  // التصدير والاستيراد
+  exportJsonBtn.addEventListener("click", function() {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sims, null, 2));
+    var dl = document.createElement("a");
+    dl.setAttribute("href", dataStr);
+    dl.setAttribute("download", "sims_backup_" + new Date().toISOString().slice(0,10) + ".json");
+    document.body.appendChild(dl); dl.click(); dl.remove();
+    showToast("💾 تم تصدير النسخة الاحتياطية بنجاح");
+  });
+
+  importJsonBtn.addEventListener("click", function() { importJsonFile.click(); });
+  importJsonFile.addEventListener("change", function(e) {
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        var parsed = JSON.parse(evt.target.result);
+        if(Array.isArray(parsed)) {
+          sims = parsed;
+          saveData();
+          render();
+          showToast("📂 تم استيراد البيانات بنجاح!");
+          closeDrawer();
+        } else { alert("ملف غير صالح."); }
+      } catch(err) { alert("خطأ في قراءة الملف."); }
+      importJsonFile.value = "";
+    };
+    reader.readAsText(file);
+  });
+
+  wipeBtn.addEventListener("click", function() {
+    if(confirm("هل أنت متأكد من حذف جميع بيانات الشرائح؟")) {
+      sims = [];
+      saveData();
+      render();
+      closeDrawer();
+      showToast("تم تفريغ كافة البيانات.");
+    }
+  });
+
+  function bindEvents() {
+    searchInput.addEventListener("input", function(e) {
+      currentSearch = e.target.value.trim();
+      clearQBtn.classList.toggle("show", currentSearch.length > 0);
+      renderGrid();
+    });
+    clearQBtn.addEventListener("click", function() {
+      searchInput.value = "";
+      currentSearch = "";
+      clearQBtn.classList.remove("show");
+      renderGrid();
+    });
+    sortSel.addEventListener("change", function(e) {
+      currentSort = e.target.value;
+      renderGrid();
+    });
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      saveItem();
+    });
+
+    delBtn.addEventListener("click", function() {
+      if(editingId !== null && confirm("هل تريد حذف هذه الشريحة نهائياً؟")) {
+        sims.splice(editingId, 1);
+        saveData();
+        overlay.hidden = true;
+        render();
+        showToast("تم الحذف.");
+      }
+    });
+
+    bulkForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      var rawList = document.getElementById("b-list").value.trim();
+      var company = document.getElementById("b-company").value;
+      var type = document.getElementById("b-type").value;
+      if(!rawList) return;
+
+      var lines = rawList.split("\n");
+      var added = 0;
+      lines.forEach(function(line) {
+        var val = line.trim();
+        if(val) {
+          sims.unshift({
+            name: "",
+            phone: val.length <= 10 ? val : "",
+            sim: val.length > 10 ? val : "",
+            company: company,
+            type: type,
+            status: "active",
+            cutDate: "",
+            notes: "استيراد جماعي",
+            debt: 0,
+            createdAt: Date.now()
+          });
+          added++;
+        }
+      });
+      saveData();
+      bulkOverlay.hidden = true;
+      bulkForm.reset();
+      render();
+      showToast("تم استيراد " + added + " شريحة بنجاح!");
     });
   }
 
-  function tileHTML(r) {
-    var isClean = r.type === "clean";
-    var badgeLabel = isClean ? "نظيفة" : "مستعملة";
-    var typeBtn = isClean
-      ? '<button class="tile-btn use" data-act="use" data-id="' + esc(r._id) + '">✅ تم استعمالها</button>'
-      : '<button class="tile-btn restore" data-act="restore" data-id="' + esc(r._id) + '">↩️ إرجاع لنظيفة</button>';
-
-    return '<div class="tile ' + esc(r.type) + '">' +
-      '<div class="tile-head">' +
-        '<div class="tile-sim">' + esc(r.sim) + '</div>' +
-        '<span class="tile-badge ' + esc(r.type) + '">' + badgeLabel + '</span>' +
-      '</div>' +
-
-      (r.company
-        ? '<div class="tile-company"><span class="tc-icon">🏢</span><span class="tc-name">' + esc(r.company) + '</span></div>'
-        : '<div class="tile-company"><span class="tc-icon">🏢</span><span class="tc-name" style="color:var(--muted);font-weight:400;">بدون شركة</span></div>') +
-
-      (r.notes ? '<div class="tile-notes">📝 ' + esc(r.notes) + '</div>' : '') +
-
-      '<div class="tile-actions">' +
-        typeBtn +
-        '<button class="tile-btn copy" data-act="copy" data-copy="' + esc(r.sim) + '">📋 نسخ</button>' +
-        '<button class="tile-btn" data-act="edit" data-id="' + esc(r._id) + '">✏️ تعديل</button>' +
-      '</div>' +
-    '</div>';
+  function getDuplicatesMap() {
+    var counts = {};
+    sims.forEach(function(item) {
+      var key = (item.phone || item.sim || "").trim();
+      if(key) counts[key] = (counts[key] || 0) + 1;
+    });
+    return counts;
   }
 
   function render() {
-    updateCounts();
-    var list = sortSims(Array.from(sims.values()).filter(matches));
+    renderTabs();
+    renderGrid();
+    updateStats();
+  }
 
-    /* Main tabs state */
-    document.querySelectorAll(".main-tab").forEach(function (b) {
-      b.setAttribute("aria-pressed", b.dataset.tab === activeTab);
+  function renderTabs() {
+    var counts = { all: sims.length, clean: 0, used: 0, active: 0, suspended: 0, disconnected: 0 };
+    sims.forEach(function(i) {
+      if(counts[i.type] !== undefined) counts[i.type]++;
+      if(counts[i.status] !== undefined) counts[i.status]++;
     });
 
-    /* Side nav state */
-    document.querySelectorAll(".side-nav-btn").forEach(function (b) {
-      b.classList.toggle("active", b.dataset.panel === activeTab);
-    });
-    document.querySelectorAll(".side-panel").forEach(function (p) {
-      p.classList.toggle("active", p.id === "panel-" + activeTab);
-    });
+    var dupsMap = getDuplicatesMap();
+    var dupCount = 0;
+    Object.keys(dupsMap).forEach(function(k) { if(dupsMap[k] > 1) dupCount++; });
 
-    /* Main grid */
-    if (!list.length) {
-      var isClean = activeTab === "clean";
-      $("grid").innerHTML = '<div class="empty"><span class="big">' + (isClean ? "🟢" : "🟡") + '</span>' +
-        '<div class="empty-title">' + (isClean ? "لا توجد شرائح نظيفة" : "لا توجد شرائح مستعملة") + '</div>' +
-        '<div class="empty-sub">' + (query ? "لا نتائج مطابقة للبحث." : "اضغط ＋ للإضافة أو 📋 لاستيراد مجموعة.") + '</div></div>';
-    } else {
-      $("grid").innerHTML = list.map(tileHTML).join("");
-    }
+    var html = `
+      <button class="tab" aria-pressed="${currentFilter==='all'}" data-filter="all">الكل <b>${counts.all}</b></button>
+      <button class="tab" aria-pressed="${currentFilter==='clean'}" data-filter="clean">🟢 نظيفة <b>${counts.clean}</b></button>
+      <button class="tab" aria-pressed="${currentFilter==='used'}" data-filter="used">🟡 مستعملة <b>${counts.used}</b></button>
+      <button class="tab" aria-pressed="${currentFilter==='active'}" data-filter="active">مفعل <b>${counts.active}</b></button>
+      <button class="tab" aria-pressed="${currentFilter==='suspended'}" data-filter="suspended">معلق <b>${counts.suspended}</b></button>
+      <button class="tab" aria-pressed="${currentFilter==='disconnected'}" data-filter="disconnected">مفصول <b>${counts.disconnected}</b></button>
+      <button class="tab dup-tab" aria-pressed="${currentFilter==='dups'}" data-filter="dups">🔁 مكررة <b>${dupCount}</b></button>
+    `;
+    tabsEl.innerHTML = html;
 
-    /* Side lists — clean */
-    var cleanList = getClean().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
-    $("snCleanListCount").textContent = cleanList.length;
-    $("snCleanList").innerHTML = cleanList.length
-      ? cleanList.slice(0, 60).map(function (r) {
-          return '<button type="button" class="mini-item clean" data-id="' + esc(r._id) + '">' +
-            '<span class="mi-sim">' + esc(r.sim) + '</span>' +
-            '<span class="mi-meta"><span>' + esc(r.company || "—") + '</span><span>🟢</span></span>' +
-          '</button>';
-        }).join("")
-      : '<div class="mini-empty">لا توجد شرائح نظيفة</div>';
-
-    /* Side lists — used */
-    var usedList = getUsed().sort(function (a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); });
-    $("snUsedListCount").textContent = usedList.length;
-    $("snUsedList").innerHTML = usedList.length
-      ? usedList.slice(0, 60).map(function (r) {
-          return '<button type="button" class="mini-item used" data-id="' + esc(r._id) + '">' +
-            '<span class="mi-sim">' + esc(r.sim) + '</span>' +
-            '<span class="mi-meta"><span>' + esc(r.company || "—") + '</span><span>🟡</span></span>' +
-          '</button>';
-        }).join("")
-      : '<div class="mini-empty">لا توجد شرائح مستعملة</div>';
-  }
-
-  /* ============================================================
-     ACTIONS
-     ============================================================ */
-  function setType(id, type) {
-    var r = sims.get(id);
-    if (!r) return;
-    r.type = type;
-    r.updatedAt = Date.now();
-    saveData();
-    render();
-    toast(type === "used" ? "✅ تم نقل الشريحة إلى قائمة المستعملة" : "↩️ تم إرجاع الشريحة إلى قائمة النظيفة");
-  }
-
-  function deleteSim(id) {
-    var r = sims.get(id);
-    if (!r) return;
-    lastDeleted = { rec: r };
-    sims.delete(id);
-    saveData();
-    render();
-    toast("تم حذف الشريحة", "تراجع", function () {
-      if (lastDeleted && lastDeleted.rec) {
-        sims.set(lastDeleted.rec._id, lastDeleted.rec);
-        saveData(); render();
-        toast("تم التراجع");
-      }
-    });
-  }
-
-  /* ============================================================
-     ADD/EDIT MODAL
-     ============================================================ */
-  function openDlg(id) {
-    editingId = id || null;
-    delArmed = false;
-    var r = editingId ? sims.get(editingId) : null;
-    if (editingId && !r) editingId = null;
-
-    $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة";
-    $("f-sim").value = r ? r.sim : "";
-    $("f-company").value = r ? (r.company || "") : "";
-    $("f-type").value = r ? r.type : activeTab;
-    $("f-notes").value = r ? (r.notes || "") : "";
-    $("err").textContent = "";
-    var db = $("delBtn");
-    db.hidden = !r;
-    db.textContent = "حذف";
-    $("overlay").hidden = false;
-    setTimeout(function () { $("f-sim").focus(); }, 60);
-  }
-  function closeDlg() { $("overlay").hidden = true; editingId = null; delArmed = false; }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    var errEl = $("err");
-    var sim = $("f-sim").value.trim();
-    if (!sim) { errEl.textContent = "أدخل رقم الشريحة."; $("f-sim").focus(); return; }
-
-    /* Duplicate check */
-    var dup = false;
-    sims.forEach(function (r) { if (r.sim === sim && r._id !== editingId) dup = true; });
-    if (dup) { errEl.textContent = "رقم الشريحة موجود مسبقاً."; return; }
-
-    var now = Date.now();
-    var id = editingId || uid();
-    var prev = editingId ? sims.get(editingId) : null;
-
-    sims.set(id, {
-      _id: id,
-      sim: sim,
-      company: $("f-company").value,
-      type: $("f-type").value,
-      notes: $("f-notes").value.trim(),
-      createdAt: prev ? (prev.createdAt || now) : now,
-      updatedAt: now
-    });
-    saveData();
-    closeDlg();
-    render();
-    toast(editingId ? "تم التحديث ✓" : "تمت الإضافة ✓");
-  }
-
-  function handleDelete() {
-    if (!editingId) return;
-    if (!delArmed) { delArmed = true; $("delBtn").textContent = "تأكيد الحذف؟"; return; }
-    var rec = sims.get(editingId);
-    if (!rec) return;
-    lastDeleted = { rec: rec };
-    sims.delete(editingId);
-    saveData(); closeDlg(); render();
-    toast("تم الحذف", "تراجع", function () {
-      if (lastDeleted && lastDeleted.rec) {
-        sims.set(lastDeleted.rec._id, lastDeleted.rec);
-        saveData(); render();
-        toast("تم التراجع");
-      }
-    });
-  }
-
-  /* ============================================================
-     BULK MODAL
-     ============================================================ */
-  function openBulk() {
-    $("b-list").value = "";
-    $("b-company").value = "";
-    $("b-type").value = activeTab;
-    $("bulkErr").textContent = "";
-    updateBulkCount();
-    $("bulkOverlay").hidden = false;
-    setTimeout(function () { $("b-list").focus(); }, 60);
-  }
-  function closeBulk() { $("bulkOverlay").hidden = true; }
-
-  function updateBulkCount() {
-    var lines = $("b-list").value.split(/[\s,;،\n\r]+/).map(function (s) { return s.trim(); }).filter(Boolean);
-    $("bulkCount").textContent = lines.length + " رقم";
-  }
-  $("b-list").addEventListener("input", updateBulkCount);
-
-  function handleBulkSubmit(e) {
-    e.preventDefault();
-    var errEl = $("bulkErr");
-    var lines = $("b-list").value.split(/[\s,;،\n\r]+/).map(function (s) { return s.trim(); }).filter(Boolean);
-    if (!lines.length) { errEl.textContent = "الصق رقم واحد على الأقل."; return; }
-
-    var company = $("b-company").value;
-    var type = $("b-type").value;
-    var now = Date.now();
-    var added = 0, dupes = 0;
-
-    /* Build existing sims index */
-    var existing = {};
-    sims.forEach(function (r) { existing[r.sim] = true; });
-
-    lines.forEach(function (sim) {
-      if (existing[sim]) { dupes++; return; }
-      var id = uid();
-      sims.set(id, {
-        _id: id, sim: sim, company: company, type: type,
-        notes: "استيراد مجموعة", createdAt: now + added, updatedAt: now + added
+    tabsEl.querySelectorAll(".tab").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        currentFilter = btn.getAttribute("data-filter");
+        renderTabs();
+        renderGrid();
       });
-      existing[sim] = true;
-      added++;
     });
-
-    saveData();
-    closeBulk();
-    activeTab = type;
-    render();
-    toast("تمت إضافة " + added + " شريحة" + (dupes ? " · تجاهل " + dupes + " مكررة" : "") + " ✓");
   }
 
-  /* ============================================================
-     EXPORT
-     ============================================================ */
-  function exportCSV() {
-    var rows = [["النوع", "رقم الشريحة", "الشركة", "ملاحظات"].map(function (c) { return '"' + c + '"'; }).join(",")];
-    var all = Array.from(sims.values()).sort(function (a, b) {
-      if (a.type !== b.type) return a.type === "clean" ? -1 : 1;
-      return (b.createdAt || 0) - (a.createdAt || 0);
+  function renderGrid() {
+    var dupsMap = getDuplicatesMap();
+    var list = sims.map(function(item, idx) {
+      var key = (item.phone || item.sim || "").trim();
+      return Object.assign({}, item, { originalIndex: idx, dupCount: dupsMap[key] || 1 });
     });
-    all.forEach(function (r) {
-      var type = r.type === "clean" ? "نظيفة" : "مستعملة";
-      rows.push([type, r.sim, r.company || "", r.notes || ""].map(function (v) {
-        return '"' + String(v).replace(/"/g, '""') + '"';
-      }).join(","));
-    });
-    var csv = "\uFEFF" + rows.join("\r\n");
-    var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "sims-" + new Date().toISOString().slice(0, 10) + ".csv";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 800);
-    toast("تم تصدير الملف ✓");
-  }
 
-  /* ============================================================
-     THEME
-     ============================================================ */
-  function applyTheme(t) {
-    if (t === "light") {
-      document.documentElement.setAttribute("data-theme", "light");
-      $("themeBtn").textContent = "☀️";
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-      $("themeBtn").textContent = "🌙";
+    if(currentFilter === "dups") {
+      list = list.filter(function(i) { return i.dupCount > 1; });
+    } else if(currentFilter === "clean" || currentFilter === "used") {
+      list = list.filter(function(i) { return i.type === currentFilter; });
+    } else if(currentFilter !== "all") {
+      list = list.filter(function(i) { return i.status === currentFilter; });
     }
-    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
-  }
 
-  /* ============================================================
-     DRAWER
-     ============================================================ */
-  function openDrawer() { $("drawer").classList.add("open"); $("drawer").setAttribute("aria-hidden", "false"); $("drawerScrim").classList.add("open"); }
-  function closeDrawer() { $("drawer").classList.remove("open"); $("drawer").setAttribute("aria-hidden", "true"); $("drawerScrim").classList.remove("open"); }
+    if(currentSearch) {
+      var q = currentSearch.toLowerCase();
+      list = list.filter(function(i) {
+        return (i.phone && i.phone.toLowerCase().includes(q)) ||
+               (i.sim && i.sim.toLowerCase().includes(q)) ||
+               (i.name && i.name.toLowerCase().includes(q)) ||
+               (i.company && i.company.toLowerCase().includes(q));
+      });
+    }
 
-  /* ============================================================
-     WIPE
-     ============================================================ */
-  function wipeAll() {
-    if (!confirm("حذف جميع الشرائح (" + sims.size + ")؟")) return;
-    if (!confirm("تأكيد أخير: لا يمكن التراجع.")) return;
-    sims = new Map();
-    saveData();
-    render();
-    closeDrawer();
-    toast("تم حذف جميع الشرائح");
-  }
-
-  /* ============================================================
-     EVENT BINDINGS
-     ============================================================ */
-  /* Main tabs */
-  $("mainTabs").addEventListener("click", function (e) {
-    var b = e.target.closest(".main-tab");
-    if (!b) return;
-    activeTab = b.dataset.tab;
-    query = "";
-    $("q").value = "";
-    $("clearQ").classList.remove("show");
-    render();
-  });
-
-  /* Side nav */
-  document.querySelectorAll(".side-nav-btn").forEach(function (b) {
-    b.addEventListener("click", function () {
-      activeTab = b.dataset.panel;
-      query = "";
-      $("q").value = "";
-      $("clearQ").classList.remove("show");
-      render();
+    list.sort(function(a, b) {
+      if(currentSort === "name") return (a.name || "").localeCompare(b.name || "ع");
+      if(currentSort === "dups") return b.dupCount - a.dupCount;
+      if(currentSort === "recent") return b.createdAt - a.createdAt;
+      return (a.cutDate || "9999").localeCompare(b.cutDate || "9999");
     });
-  });
 
-  /* Search */
-  $("q").addEventListener("input", function (e) {
-    query = e.target.value;
-    $("clearQ").classList.toggle("show", !!query);
-    render();
-  });
-  $("clearQ").addEventListener("click", function () {
-    query = ""; $("q").value = ""; $("clearQ").classList.remove("show"); render();
-  });
+    summaryEl.textContent = "إجمالي العناصر: " + sims.length + " (المعروض: " + list.length + ")";
 
-  /* Grid actions */
-  $("grid").addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-act]");
-    if (!btn) return;
-    var act = btn.dataset.act;
-    var id = btn.dataset.id;
-    if (act === "use") setType(id, "used");
-    else if (act === "restore") setType(id, "clean");
-    else if (act === "edit") openDlg(id);
-    else if (act === "copy") copyText(btn.dataset.copy);
-  });
+    if(list.length === 0) {
+      gridEl.innerHTML = `<div class="empty"><span class="big">📭</span>لا توجد شرائح مطابقة للعرض.</div>`;
+      return;
+    }
 
-  /* Side list — open item on click */
-  $("snCleanList").addEventListener("click", function (e) {
-    var b = e.target.closest(".mini-item");
-    if (!b) return;
-    closeDrawer();
-    setTimeout(function () { openDlg(b.dataset.id); }, 200);
-  });
-  $("snUsedList").addEventListener("click", function (e) {
-    var b = e.target.closest(".mini-item");
-    if (!b) return;
-    closeDrawer();
-    setTimeout(function () { openDlg(b.dataset.id); }, 200);
-  });
+    var html = "";
+    list.forEach(function(item) {
+      var isClean = item.type === "clean";
+      var statusName = item.status === "active" ? "مفعل" : (item.status === "suspended" ? "معلق" : "مفصول");
+      var isDup = item.dupCount > 1;
 
-  /* Drawer controls */
-  $("menuBtn").addEventListener("click", openDrawer);
-  $("drawerClose").addEventListener("click", closeDrawer);
-  $("drawerScrim").addEventListener("click", closeDrawer);
-
-  /* Drawer actions */
-  $("dAddClean").addEventListener("click", function () {
-    closeDrawer();
-    setTimeout(function () { activeTab = "clean"; render(); openDlg(null); }, 200);
-  });
-  $("dAddMany").addEventListener("click", function () {
-    closeDrawer();
-    setTimeout(openBulk, 200);
-  });
-  $("dExpCSV").addEventListener("click", exportCSV);
-  $("dWipe").addEventListener("click", wipeAll);
-
-  /* Header buttons */
-  $("addBtn").addEventListener("click", function () { openDlg(null); });
-  $("addManyBtn").addEventListener("click", openBulk);
-
-  /* Modal close */
-  $("closeDlg").addEventListener("click", closeDlg);
-  $("bulkClose").addEventListener("click", closeBulk);
-
-  /* Form submit */
-  $("form").addEventListener("submit", handleSubmit);
-  $("bulkForm").addEventListener("submit", handleBulkSubmit);
-  $("delBtn").addEventListener("click", handleDelete);
-
-  /* Theme */
-  $("themeBtn").addEventListener("click", function () {
-    var isLight = document.documentElement.getAttribute("data-theme") === "light";
-    applyTheme(isLight ? "dark" : "light");
-  });
-
-  /* Overlay clicks */
-  $("overlay").addEventListener("click", function (e) { if (e.target === $("overlay")) closeDlg(); });
-  $("bulkOverlay").addEventListener("click", function (e) { if (e.target === $("bulkOverlay")) closeBulk(); });
-
-  /* Escape */
-  document.addEventListener("keydown", function (e) {
-    if (e.key !== "Escape") return;
-    if (!$("overlay").hidden) closeDlg();
-    else if (!$("bulkOverlay").hidden) closeBulk();
-    else if ($("drawer").classList.contains("open")) closeDrawer();
-  });
-
-  /* ============================================================
-     INIT
-     ============================================================ */
-  try {
-    var savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme === "light") applyTheme("light");
-    else if (savedTheme === "dark") applyTheme("dark");
-    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) applyTheme("light");
-  } catch (e) {}
-
-  loadData();
-  render();
-
-  /* Confirm seed on first run */
-  if (getClean().length === SEED_CLEAN_SIMS.length && getUsed().length === 0) {
-    setTimeout(function () {
-      toast("تم استيراد " + SEED_CLEAN_SIMS.length + " شريحة نظيفة تلقائياً ✓");
-    }, 700);
+      html += `
+        <div class="card ${item.type} ${isDup ? 'duplicate' : ''}">
+          <div class="card-header">
+            <div class="phone-wrap">
+              <span class="phone-lg">${item.phone || item.sim || 'بدون رقم'}</span>
+              ${item.phone ? `<button class="copy-btn" title="نسخ الرقم" onclick="navigator.clipboard.writeText('${item.phone}')">📋</button>` : ''}
+            </div>
+            <div class="badge-tags">
+              ${isDup ? `<span class="badge dup">🔁 مكرر (${item.dupCount})</span>` : ''}
+              <span class="badge ${isClean ? 'clean-type' : 'used-type'}">${isClean ? '🟢 نظيفة' : '🟡 مستعملة'}</span>
+              <span class="badge ${item.status}">${statusName}</span>
+              ${item.company ? `<span class="badge days">${item.company}</span>` : ''}
+              ${item.debt ? `<span class="badge debt">دين: ${item.debt}₪</span>` : ''}
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="name-row">
+              <span>${item.name || 'بدون اسم زبون'}</span>
+              ${item.sim && item.phone ? `<span class="sim-row">SIM: ${item.sim}</span>` : ''}
+            </div>
+            ${item.notes ? `<div class="notes-box">📝 ${item.notes}</div>` : ''}
+          </div>
+          <div class="date-row">
+            <span>📅 الفصل: <span class="date-val">${item.cutDate || 'غير محدد'}</span></span>
+            <div class="card-actions">
+              <button class="action-btn edit" onclick="editItem(${item.originalIndex})">✏️ تعديل</button>
+              ${item.phone ? `<a class="action-btn wa" href="https://wa.me/972${item.phone.replace(/^0/,'')}" target="_blank">💬 واتساب</a>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    gridEl.innerHTML = html;
   }
+
+  function updateStats() {
+    var cleanC = 0, usedC = 0, actC = 0, suspC = 0;
+    sims.forEach(function(i) {
+      if(i.type === 'clean') cleanC++; else usedC++;
+      if(i.status === 'active') actC++;
+      if(i.status === 'suspended') suspC++;
+    });
+
+    var dupsMap = getDuplicatesMap();
+    var dupsList = [];
+    Object.keys(dupsMap).forEach(function(k) { if(dupsMap[k] > 1) dupsList.push({ val: k, count: dupsMap[k] }); });
+
+    document.getElementById("statGrid").innerHTML = `
+      <div class="stat on"><div class="num">${cleanC}</div><div class="lbl">🟢 نظيفة متاحة</div></div>
+      <div class="stat hold"><div class="num">${usedC}</div><div class="lbl">🟡 مستعملة</div></div>
+      <div class="stat acc"><div class="num">${actC}</div><div class="lbl">مفعلة نشطة</div></div>
+      <div class="stat dup"><div class="num">${dupsList.length}</div><div class="lbl">أرقام مكررة</div></div>
+    `;
+
+    document.getElementById("dupsMiniCount").textContent = dupsList.length;
+    document.getElementById("menuDot").style.display = dupsList.length > 0 ? "flex" : "none";
+    document.getElementById("menuDot").textContent = dupsList.length;
+
+    var dupsHtml = "";
+    if(dupsList.length === 0) {
+      dupsHtml = `<div class="mini-empty">لا توجد أرقام مكررة</div>`;
+    } else {
+      dupsList.forEach(function(d) {
+        dupsHtml += `<div class="mini-item"><div class="mi-phone">${d.val}</div><div class="mi-meta"><span>تكرر ${d.count} مرات</span></div></div>`;
+      });
+    }
+    document.getElementById("dupsMiniList").innerHTML = dupsHtml;
+  }
+
+  window.editItem = function(idx) { openEditor(idx); };
+
+  function openEditor(idx) {
+    editingId = idx;
+    errEl.textContent = "";
+    if(idx !== null) {
+      var item = sims[idx];
+      dlgTitle.textContent = "تعديل شريحة";
+      document.getElementById("f-name").value = item.name || "";
+      document.getElementById("f-phone").value = item.phone || "";
+      document.getElementById("f-company").value = item.company || "";
+      document.getElementById("f-sim").value = item.sim || "";
+      document.getElementById("f-type").value = item.type || "clean";
+      document.getElementById("f-status").value = item.status || "active";
+      document.getElementById("f-date").value = item.cutDate || "";
+      document.getElementById("f-debt").value = item.debt || 0;
+      document.getElementById("f-notes").value = item.notes || "";
+      delBtn.hidden = false;
+    } else {
+      dlgTitle.textContent = "إضافة شريحة جديدة";
+      form.reset();
+      document.getElementById("f-type").value = "clean";
+      document.getElementById("f-status").value = "active";
+      document.getElementById("f-debt").value = 0;
+      delBtn.hidden = true;
+    }
+    overlay.hidden = false;
+  }
+
+  function saveItem() {
+    var name = document.getElementById("f-name").value.trim();
+    var phone = document.getElementById("f-phone").value.trim();
+    var company = document.getElementById("f-company").value;
+    var sim = document.getElementById("f-sim").value.trim();
+    var type = document.getElementById("f-type").value;
+    var status = document.getElementById("f-status").value;
+    var cutDate = document.getElementById("f-date").value;
+    var debt = parseFloat(document.getElementById("f-debt").value) || 0;
+    var notes = document.getElementById("f-notes").value.trim();
+
+    if(!phone && !sim) {
+      errEl.textContent = "يرجى إدخال رقم الهاتف أو رقم الشريحة على الأقل.";
+      return;
+    }
+
+    var record = {
+      name: name,
+      phone: phone,
+      sim: sim,
+      company: company,
+      type: type,
+      status: status,
+      cutDate: cutDate,
+      debt: debt,
+      notes: notes,
+      createdAt: editingId !== null ? sims[editingId].createdAt : Date.now()
+    };
+
+    if(editingId !== null) {
+      sims[editingId] = record;
+    } else {
+      sims.unshift(record);
+    }
+
+    saveData();
+    overlay.hidden = true;
+    render();
+    showToast("تم الحفظ بنجاح!");
+  }
+
+  init();
 })();
 </script>
 </body>
